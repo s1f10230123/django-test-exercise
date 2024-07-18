@@ -41,6 +41,7 @@ def close(request,task_id):
         raise Http404("Task dose not exist")
     task.completed=True
     task.save()
+    return redirect(index)
   
 def update(request, task_id):
     try:
