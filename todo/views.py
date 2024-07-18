@@ -2,9 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import Http404
 from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_datetime
+from django.db.models.functions import Length  
 from todo.models import Task
-# Create your views here.
-
 
 def index(request):
     if request.method == 'POST':
@@ -12,8 +11,11 @@ def index(request):
                     due_at=make_aware(parse_datetime(request.POST['due_at'])))
         task.save()
 
-    if request.GET.get('order') == 'due':
+    order = request.GET.get('order', 'post')  
+    if order == 'due':
         tasks = Task.objects.order_by('due_at')
+    elif order == 'title_length':
+        tasks = Task.objects.annotate(title_length=Length('title')).order_by('title_length')
     else:
         tasks = Task.objects.order_by('-posted_at')
 
@@ -22,7 +24,6 @@ def index(request):
     }
     return render(request, 'todo/index.html', context)
 
-
 def detail(request, task_id):
     try:
         task = Task.objects.get(pk=task_id)
@@ -30,19 +31,19 @@ def detail(request, task_id):
         raise Http404("Task does not exist")
     
     context = {
-        'task' : task,
+        'task': task,
     }
     return render(request, 'todo/detail.html', context)
 
-def close(request,task_id):
+def close(request, task_id):
     try:
-        task=Task.objects.get(pk=task_id)
+        task = Task.objects.get(pk=task_id)
     except Task.DoesNotExist:
-        raise Http404("Task dose not exist")
-    task.completed=True
+        raise Http404("Task does not exist")
+    task.completed = True
     task.save()
     return redirect(index)
-  
+
 def update(request, task_id):
     try:
         task = Task.objects.get(pk=task_id)
@@ -55,11 +56,10 @@ def update(request, task_id):
         return redirect(detail, task_id)
     
     context = {
-            "task" : task
+            "task": task
     }
     return render(request, "todo/edit.html", context)
 
-  
 def delete(request, task_id):
     try:
         task = Task.objects.get(pk=task_id)
