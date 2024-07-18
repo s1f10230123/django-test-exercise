@@ -48,6 +48,14 @@
       </ul>
     </div>
     {% endfor %}
+    <h3>今日のタスク</h3>
+    <ul>
+      {% for task in tasks %}
+      <li>{{ task.title }} - {{ task.due_at }}</li>
+      {% empty %}
+      <li>今日はタスクがありません。</li>
+      {% endfor %}
+    </ul>
   </body>
 
 </html>

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import Http404
 from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_datetime
+from django.utils import timezone
 from todo.models import Task
 # Create your views here.
 
@@ -66,3 +67,15 @@ def delete(request, task_id):
         raise Http404('Task does not exist')
     task.delete()
     return redirect(index)
+
+def today_tasks(request):
+    now = timezone.now()
+    current_date = now.date()
+
+    tasks = Task.objects.filter(due_at=current_date)
+
+    context = {
+        'tasks': tasks
+    }
+    
+    return render(request, 'index.html', context)
