@@ -11,22 +11,22 @@
   <body>
     <h1>{{ task.title }}</h1>
     <ul>
-      <li>Posted at: {{ task.posted_at }}</li>
+      <li>追加日: {{ task.posted_at }}</li>
       {% if task.due_at %}
-      <li>Due at: {{ task.due_at }}</li>
+      <li>期限: {{ task.due_at }}</li>
       {% endif %}
       {% if task.completed %}
-      <li>Status: Completed</li>
+      <li>進捗: Completed</li>
       {% else %}
-      <li>Status: Not Completed</li>
+      <li>進捗: Not Completed</li>
       {% endif %}
     </ul>
 
     <div>
-      <a href="{% url 'index' %}">Top</a>
-      |<a href="{% url 'close' task.id %}">Close</a>
-      | <a href="{% url 'delete' task.id %}">Delete</a>
-      | <a href="{% url 'update' task.id %}">Edit</a>
+      <a href="{% url 'index' %}">ホーム画面</a>
+      |<a href="{% url 'close' task.id %}">終了</a>
+      | <a href="{% url 'delete' task.id %}">削除</a>
+      | <a href="{% url 'update' task.id %}">編集</a>
     </div>
 
   </body>
